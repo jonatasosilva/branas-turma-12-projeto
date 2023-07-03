@@ -1,4 +1,5 @@
 import axios from "axios";
+import { validate } from "uuid";
 
 axios.defaults.validateStatus = function () {
     return true;
@@ -26,3 +27,55 @@ test("Se a distância for inválida deve lançar um erro", async function () {
     const output = response.data;
     expect(output).toBe("Invalid distance");
 });
+
+test("Não deve cadastrar um passageiro se o CPF for inválido", async function () {
+    const input = {
+        name: "John Doe",
+        email: "johndoe@pm.me",
+        document: "732.952.620-72"
+    }
+    const response = await axios.post("http://localhost:3000/passengers", input);
+    expect(response.status).toBe(422);
+    const output = response.data;
+    expect(output).toBe("Invalid document");
+})
+
+
+test("Deve cadastrar um passageiro", async function () {
+    const input = {
+        name: "John Doe",
+        email: "johndoe@pm.me",
+        document: "732.952.620-71"
+    }
+    const response = await axios.post("http://localhost:3000/passengers", input);
+    expect(response.status).toBe(201);
+    const output = response.data;
+    expect(validate(output.passenger_id)).toBeTruthy();
+})
+
+test("Não deve cadastrar um motorista se o CPF for inválido", async function () {
+    const input = {
+        name: "John Doe",
+        email: "johndoe@pm.me",
+        document: "732.952.620-72",
+        car_plate: "ABC-1234",
+    }
+    const response = await axios.post("http://localhost:3000/drivers", input);
+    expect(response.status).toBe(422);
+    const output = response.data;
+    expect(output).toBe("Invalid document");
+})
+
+
+test("Deve cadastrar um motorista", async function () {
+    const input = {
+        name: "John Doe",
+        email: "johndoe@pm.me",
+        document: "732.952.620-71",
+        car_plate: "ABC-1234",
+    }
+    const response = await axios.post("http://localhost:3000/drivers", input);
+    expect(response.status).toBe(201);
+    const output = response.data;
+    expect(validate(output.driver_id)).toBeTruthy();
+})
