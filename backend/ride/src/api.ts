@@ -1,6 +1,8 @@
 // @ts-nocheck
 import express from "express";
 import Ride from "./Ride";
+import RegisterPassenger from "./RegisterPassenger";
+import RegisterDriver from "./RegisterDriver";
 const app = express();
 
 app.use(express.json());
@@ -15,6 +17,28 @@ app.post("/calculate_ride", function (req, res) {
         res.json({ price });
     } catch (e) {
         res.status(422).send(e.message);
+    }
+});
+
+app.post("/passengers", async function (req, res) {
+    try {
+        const registerPassenger = new RegisterPassenger();
+        const output = await registerPassenger.execute(req.body)
+        res.status(201).json(output)
+    } catch (e) {
+        console.log(e.message)
+        res.status(422).send(e.message)
+    }
+});
+
+app.post("/drivers", async function (req, res) {
+    try {
+        const registerDriver = new RegisterDriver();
+        const output = await registerDriver.execute(req.body)
+        res.status(201).json(output)
+    } catch (e) {
+        console.log(e.message)
+        res.status(422).send(e.message)
     }
 });
 
