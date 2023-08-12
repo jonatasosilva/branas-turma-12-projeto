@@ -1,8 +1,8 @@
 // @ts-nocheck
 import express from "express";
 import Ride from "./Ride";
-import RegisterPassenger from "./RegisterPassenger";
-import RegisterDriver from "./RegisterDriver";
+import CreatePassenger from "./CreatePassenger";
+import CreateDriver from "./CreateDriver";
 const app = express();
 
 app.use(express.json());
@@ -22,7 +22,7 @@ app.post("/calculate_ride", function (req, res) {
 
 app.post("/passengers", async function (req, res) {
     try {
-        const registerPassenger = new RegisterPassenger();
+        const registerPassenger = new CreatePassenger();
         const output = await registerPassenger.execute(req.body)
         res.status(201).json(output)
     } catch (e) {
@@ -33,7 +33,7 @@ app.post("/passengers", async function (req, res) {
 
 app.post("/drivers", async function (req, res) {
     try {
-        const registerDriver = new RegisterDriver();
+        const registerDriver = new CreateDriver();
         const output = await registerDriver.execute(req.body)
         res.status(201).json(output)
     } catch (e) {

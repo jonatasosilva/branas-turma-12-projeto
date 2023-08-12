@@ -4,7 +4,7 @@ import crypto from "crypto";
 import pgp from "pg-promise";
 import Cpf from './Cpf';
 
-export default class RegisterDriver {
+export default class CreateDriver {
     constructor() { }
 
     async execute(input: Input): Promise<Output> {
