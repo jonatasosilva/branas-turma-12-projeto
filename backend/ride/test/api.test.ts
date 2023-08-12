@@ -37,7 +37,7 @@ test("Não deve cadastrar um passageiro se o CPF for inválido", async function 
     const response = await axios.post("http://localhost:3000/passengers", input);
     expect(response.status).toBe(422);
     const output = response.data;
-    expect(output).toBe("Invalid document");
+    expect(output).toBe("Invalid cpf");
 })
 
 
@@ -63,7 +63,7 @@ test("Não deve cadastrar um motorista se o CPF for inválido", async function (
     const response = await axios.post("http://localhost:3000/drivers", input);
     expect(response.status).toBe(422);
     const output = response.data;
-    expect(output).toBe("Invalid document");
+    expect(output).toBe("Invalid cpf");
 })
 
 
