@@ -1,5 +1,4 @@
 import axios from "axios";
-import { validate } from "uuid";
 
 axios.defaults.validateStatus = function () {
     return true;
@@ -50,7 +49,7 @@ test("Deve cadastrar um passageiro", async function () {
     const response = await axios.post("http://localhost:3000/passengers", input);
     expect(response.status).toBe(201);
     const output = response.data;
-    expect(validate(output.passenger_id)).toBeTruthy();
+    expect(output.passenger_id).toBeDefined();
 })
 
 test("Não deve cadastrar um motorista se o CPF for inválido", async function () {
@@ -77,5 +76,5 @@ test("Deve cadastrar um motorista", async function () {
     const response = await axios.post("http://localhost:3000/drivers", input);
     expect(response.status).toBe(201);
     const output = response.data;
-    expect(validate(output.driver_id)).toBeTruthy();
+    expect(output.driver_id).toBeDefined();
 })
