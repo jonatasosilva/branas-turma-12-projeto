@@ -1,22 +1,20 @@
 // @ts-nocheck
 import express from "express";
-import Ride from "./Ride";
-import CreatePassenger from "./CreatePassenger";
-import CreateDriver from "./CreateDriver";
-import pgp from "pg-promise";
+import CreatePassenger from "./application/usecase/CreatePassenger";
+import CreateDriver from "./application/usecase/CreateDriver";
+import CalculateRide from "./application/usecase/CalculateRide";
+import GetPassenger from "./application/usecase/GetPassenger";
+import GetDriver from "./application/usecase/GetDriver";
 
 const app = express();
 
 app.use(express.json());
 
-app.post("/calculate_ride", function (req, res) {
+app.post("/calculate_ride", async function (req, res) {
     try {
-        const ride = new Ride();
-        for (const segment of req.body.segments) {
-            ride.addSegment(segment.distance, new Date(segment.date));
-        }
-        const price = ride.calculate();
-        res.json({ price });
+        const usecase = new CalculateRide();
+        const output = await usecase.execute(req.body);
+        res.json(output);
     } catch (e) {
         res.status(422).send(e.message);
     }
@@ -33,10 +31,13 @@ app.post("/passengers", async function (req, res) {
 });
 
 app.get("/passengers/:passengerId", async function (req, res) {
-    const connection = pgp()(process.env.DATABASE_URL);
-    const [passengerData] = await connection.query("select * from passengers where passenger_id = $1", [req.params.passengerId]);
-    await connection.$pool.end();
-    res.json(passengerData);
+    try {
+        const usecase = new GetPassenger();
+        const output = await usecase.execute(req.params)
+        res.json(output)
+    } catch (e) {
+        res.status(422).send(e.message)
+    }
 });
 
 app.post("/drivers", async function (req, res) {
@@ -50,10 +51,13 @@ app.post("/drivers", async function (req, res) {
 });
 
 app.get("/drivers/:driverId", async function (req, res) {
-    const connection = pgp()(process.env.DATABASE_URL);
-    const [driverId] = await connection.query("select * from drivers where driver_id = $1", [req.params.driverId]);
-    await connection.$pool.end();
-    res.json(driverId);
+    try {
+        const usecase = new GetDriver();
+        const output = await usecase.execute(req.params)
+        res.json(output)
+    } catch (e) {
+        res.status(422).send(e.message)
+    }
 });
 
 app.listen(3000);
