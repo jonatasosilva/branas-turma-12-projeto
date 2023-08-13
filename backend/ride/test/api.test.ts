@@ -94,3 +94,22 @@ test("Deve cadastrar um motorista", async function () {
     const output = response.data;
     expect(output.driver_id).toBeDefined();
 })
+
+test("Deve obter um motorista", async function () {
+    const input = {
+        name: "John Doe",
+        email: "johndoe@pm.me",
+        document: "732.952.620-71",
+        car_plate: "ABC-1234",
+    }
+    const responseCreate = await axios.post("http://localhost:3000/drivers", input);
+    expect(responseCreate.status).toBe(201);
+    const outputCreate = responseCreate.data;
+    const responseGet = await axios.get(`http://localhost:3000/drivers/${outputCreate.driver_id}`)
+    const outputGet = responseGet.data;
+    console.log(outputGet)
+    expect(outputGet.name).toBe("John Doe")
+    expect(outputGet.email).toBe("johndoe@pm.me")
+    expect(outputGet.document).toBe("732.952.620-71")
+    expect(outputGet.car_plate).toBe("ABC-1234")
+})
