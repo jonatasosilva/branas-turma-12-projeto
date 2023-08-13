@@ -107,7 +107,7 @@ test("Deve obter um motorista", async function () {
     const outputCreate = responseCreate.data;
     const responseGet = await axios.get(`http://localhost:3000/drivers/${outputCreate.driver_id}`)
     const outputGet = responseGet.data;
-    console.log(outputGet)
+    console.log(responseGet.status)
     expect(outputGet.name).toBe("John Doe")
     expect(outputGet.email).toBe("johndoe@pm.me")
     expect(outputGet.document).toBe("732.952.620-71")
