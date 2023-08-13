@@ -49,4 +49,11 @@ app.post("/drivers", async function (req, res) {
     }
 });
 
+app.get("/drivers/:driverId", async function (req, res) {
+    const connection = pgp()(process.env.DATABASE_URL);
+    const [driverId] = await connection.query("select * from drivers where driver_id = $1", [req.params.driverId]);
+    await connection.$pool.end();
+    res.json(driverId);
+});
+
 app.listen(3000);
