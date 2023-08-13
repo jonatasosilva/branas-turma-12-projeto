@@ -2,7 +2,8 @@
 import 'dotenv/config'
 import crypto from "crypto";
 import pgp from "pg-promise";
-import Cpf from './Cpf';
+import Cpf from '../../Cpf';
+
 
 export default class CreateDriver {
     constructor() { }
