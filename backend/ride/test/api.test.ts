@@ -52,6 +52,22 @@ test("Deve cadastrar um passageiro", async function () {
     expect(output.passenger_id).toBeDefined();
 })
 
+test("Deve obter um passageiro", async function () {
+    const input = {
+        name: "John Doe",
+        email: "johndoe@pm.me",
+        document: "732.952.620-71"
+    }
+    const responseCreate = await axios.post("http://localhost:3000/passengers", input);
+    expect(responseCreate.status).toBe(201);
+    const outputCreate = responseCreate.data;
+    const responseGet = await axios.get(`http://localhost:3000/passengers/${outputCreate.passenger_id}`);
+    const outputGet = responseGet.data;
+    expect(outputGet.name).toBe("John Doe")
+    expect(outputGet.email).toBe("johndoe@pm.me")
+    expect(outputGet.document).toBe("732.952.620-71")
+});
+
 test("Não deve cadastrar um motorista se o CPF for inválido", async function () {
     const input = {
         name: "John Doe",
