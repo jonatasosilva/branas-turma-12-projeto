@@ -11,7 +11,7 @@ export default class CreatePassenger {
         const document = new Cpf(input.document);
         const passengerId = crypto.randomUUID();
         const connection = pgp()(process.env.DATABASE_URL);
-        await connection.query("INSERT INTO passengers (passenger_id, name, email, document) VALUES ($1, $2, $3, $4)", [passengerId, input.name, input.name, document]);
+        await connection.query("INSERT INTO passengers (passenger_id, name, email, document) VALUES ($1, $2, $3, $4)", [passengerId, input.name, input.email, document.value]);
         await connection.$pool.end();
         return { passenger_id: passengerId }
     }
