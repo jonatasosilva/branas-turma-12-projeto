@@ -1,18 +1,16 @@
-// @ts-nocheck
-import 'dotenv/config'
-import pgp from "pg-promise";
+import DriverRepository from '../repository/DriverRepository';
 
 export default class GetDriver {
+    constructor(readonly driverRepository: DriverRepository) { }
+
     async execute(input: Input): Promise<Output> {
-        const connection = pgp()(process.env.DATABASE_URL);
-        const [driverData] = await connection.query("select * from drivers where driver_id = $1", [input.driverId]);
-        await connection.$pool.end();
+        const driver = await this.driverRepository.get(input.driverId);
         return {
-            driver_id: driverData.driver_id,
-            name: driverData.name,
-            email: driverData.email,
-            document: driverData.document,
-            car_plate: driverData.car_plate,
+            driverId: driver.driverId,
+            name: driver.name,
+            email: driver.email.value,
+            document: driver.document.value,
+            carPlate: driver.carPlate.value,
         };
     }
 }
@@ -22,9 +20,9 @@ type Input = {
 }
 
 type Output = {
-    driver_id: string,
+    driverId: string,
     name: string,
     email: string,
     document: string,
-    car_plate: string
+    carPlate: string
 }

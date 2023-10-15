@@ -1,17 +1,15 @@
-// @ts-nocheck
-import 'dotenv/config'
-import pgp from "pg-promise";
+import PassengerRepository from "../repository/PassengerRepository";
 
 export default class GetPassenger {
+    constructor(readonly passengerRepository: PassengerRepository) { }
+
     async execute(input: Input): Promise<Output> {
-        const connection = pgp()(process.env.DATABASE_URL);
-        const [passengerData] = await connection.query("select * from passengers where passenger_id = $1", [input.passengerId]);
-        await connection.$pool.end();
+        const passenger = await this.passengerRepository.get(input.passengerId);
         return {
-            passanger_id: passengerData.passanger_id,
-            name: passengerData.name,
-            email: passengerData.email,
-            document: passengerData.document,
+            passengerId: passenger.passengerId,
+            name: passenger.name,
+            email: passenger.email.value,
+            document: passenger.document.value,
         };
     }
 }
@@ -21,7 +19,7 @@ type Input = {
 }
 
 type Output = {
-    passanger_id: string,
+    passengerId: string,
     name: string,
     email: string,
     document: string

@@ -1,19 +1,13 @@
-// @ts-nocheck
-import 'dotenv/config'
-import crypto from "crypto";
-import pgp from "pg-promise";
-import Cpf from '../../Cpf';
+import Passenger from '../../domain/Passenger';
+import PassengerRepository from '../repository/PassengerRepository';
 
 export default class CreatePassenger {
-    constructor() { }
+    constructor(readonly passengerRepository: PassengerRepository) { }
 
     async execute(input: Input): Promise<Output> {
-        const document = new Cpf(input.document);
-        const passengerId = crypto.randomUUID();
-        const connection = pgp()(process.env.DATABASE_URL);
-        await connection.query("INSERT INTO passengers (passenger_id, name, email, document) VALUES ($1, $2, $3, $4)", [passengerId, input.name, input.email, document.value]);
-        await connection.$pool.end();
-        return { passenger_id: passengerId }
+        const passenger = Passenger.create(input.name, input.email, input.document);
+        this.passengerRepository.save(passenger);
+        return { passengerId: passenger.passengerId }
     }
 }
 
@@ -24,5 +18,5 @@ type Input = {
 }
 
 type Output = {
-    passenger_id: string
+    passengerId: string
 }
