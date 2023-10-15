@@ -4,6 +4,12 @@ axios.defaults.validateStatus = function () {
     return true;
 };
 
+async function sleep(ms: number) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
+}
+
 test("Deve fazer o cálculo do preço de uma corrida durante o dia", async function () {
     const input = {
         segments: [
@@ -49,7 +55,7 @@ test("Deve cadastrar um passageiro", async function () {
     const response = await axios.post("http://localhost:3000/passengers", input);
     expect(response.status).toBe(201);
     const output = response.data;
-    expect(output.passenger_id).toBeDefined();
+    expect(output.passengerId).toBeDefined();
 })
 
 test("Deve obter um passageiro", async function () {
@@ -61,7 +67,8 @@ test("Deve obter um passageiro", async function () {
     const responseCreate = await axios.post("http://localhost:3000/passengers", input);
     expect(responseCreate.status).toBe(201);
     const outputCreate = responseCreate.data;
-    const responseGet = await axios.get(`http://localhost:3000/passengers/${outputCreate.passenger_id}`);
+    await sleep(100);
+    const responseGet = await axios.get(`http://localhost:3000/passengers/${outputCreate.passengerId}`);
     const outputGet = responseGet.data;
     expect(outputGet.name).toBe("John Doe")
     expect(outputGet.email).toBe("johndoe@pm.me")
@@ -73,7 +80,7 @@ test("Não deve cadastrar um motorista se o CPF for inválido", async function (
         name: "John Doe",
         email: "johndoe@pm.me",
         document: "732.952.620-72",
-        car_plate: "ABC-1234",
+        car_plate: "ABC1234",
     }
     const response = await axios.post("http://localhost:3000/drivers", input);
     expect(response.status).toBe(422);
@@ -87,12 +94,12 @@ test("Deve cadastrar um motorista", async function () {
         name: "John Doe",
         email: "johndoe@pm.me",
         document: "732.952.620-71",
-        car_plate: "ABC-1234",
+        carPlate: "ABC1234",
     }
     const response = await axios.post("http://localhost:3000/drivers", input);
     expect(response.status).toBe(201);
     const output = response.data;
-    expect(output.driver_id).toBeDefined();
+    expect(output.driverId).toBeDefined();
 })
 
 test("Deve obter um motorista", async function () {
@@ -100,16 +107,16 @@ test("Deve obter um motorista", async function () {
         name: "John Doe",
         email: "johndoe@pm.me",
         document: "732.952.620-71",
-        car_plate: "ABC-1234",
+        carPlate: "ABC1234",
     }
     const responseCreate = await axios.post("http://localhost:3000/drivers", input);
     expect(responseCreate.status).toBe(201);
     const outputCreate = responseCreate.data;
-    const responseGet = await axios.get(`http://localhost:3000/drivers/${outputCreate.driver_id}`)
+    await sleep(200);
+    const responseGet = await axios.get(`http://localhost:3000/drivers/${outputCreate.driverId}`)
     const outputGet = responseGet.data;
-    console.log(responseGet.status)
     expect(outputGet.name).toBe("John Doe")
     expect(outputGet.email).toBe("johndoe@pm.me")
     expect(outputGet.document).toBe("732.952.620-71")
-    expect(outputGet.car_plate).toBe("ABC-1234")
+    expect(outputGet.carPlate).toBe("ABC1234")
 })
