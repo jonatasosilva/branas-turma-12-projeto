@@ -5,6 +5,12 @@ import Driver from "../../src/domain/Driver";
 import DriverRepository from "../../src/application/repository/DriverRepository";
 import PgPromiseAdapter from "../../src/infra/database/PgPromiseAdapter";
 
+async function sleep(ms: number) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
 test("Deve cadastrar um motorista", async function () {
     const input = {
         name: "John Doe",
@@ -60,6 +66,7 @@ test("Deve obter o motorista", async function () {
     const usecase1 = new CreateDriver(new DriverRepositoryDatabase(connection));
     const output1 = await usecase1.execute(input);
     const usecase2 = new GetDriver(new DriverRepositoryDatabase(connection));
+    await sleep(200);
     const output2 = await usecase2.execute({ driverId: output1.driverId });
     expect(output2.name).toBe("John Doe");
     expect(output2.email).toBe("john.doe@gmail.com");

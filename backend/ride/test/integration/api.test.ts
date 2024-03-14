@@ -1,5 +1,11 @@
 import axios from "axios";
 
+async function sleep(ms: number) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
 axios.defaults.validateStatus = function () {
     return true;
 };
@@ -82,7 +88,7 @@ test("Não deve cadastrar o passageiro com cpf inválido", async function () {
     expect(output).toBe("Invalid cpf");
 });
 
-test.only("Deve obter o passageiro", async function () {
+test("Deve obter o passageiro", async function () {
     const input = {
         name: "John Doe",
         email: "john.doe@gmail.com",
@@ -93,6 +99,7 @@ test.only("Deve obter o passageiro", async function () {
         input
     );
     const output1 = response1.data;
+    await sleep(200);
     const response2 = await axios.get(
         `http://localhost:3000/passengers/${output1.passengerId}`
     );
